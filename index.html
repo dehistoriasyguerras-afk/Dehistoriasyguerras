@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>De Historias y Guerras | Crónica Histórica</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root { --primary: #8b0000; --bg: #fdfcf7; --text: #1a1a1a; --border: #2c2c2c; }
+        body { font-family: 'Times New Roman', Times, serif; background: var(--bg); color: var(--text); margin: 0; padding: 0; line-height: 1.5; }
+
+        header { text-align: center; padding: 40px 15px; border-top: 5px solid var(--border); border-bottom: 2px double var(--border); margin: 10px 20px; }
+        header h1 { font-family: 'Georgia', serif; font-size: clamp(2rem, 10vw, 3.5rem); margin: 0; font-weight: 800; letter-spacing: -2px; font-variant: small-caps; }
+
+        nav { display: flex; justify-content: center; position: sticky; top: 0; z-index: 1000; background: var(--bg); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+        nav button { background: none; border: none; color: var(--text); font-weight: bold; cursor: pointer; font-size: 0.85rem; text-transform: uppercase; padding: 12px 15px; font-family: 'Arial', sans-serif; }
+        nav button.active { color: var(--primary); text-decoration: underline; text-underline-offset: 5px; }
+
+        .container { max-width: 850px; margin: 0 auto; padding: 20px; }
+        .tab-content { display: none; }
+        .tab-content.active { display: block; }
+
+        /* Estilo foto perfil ampliable */
+        .bio-card { padding: 20px; border: 1px solid #d3d3d3; background: white; box-shadow: 5px 5px 0px #e0e0e0; margin-bottom: 30px; overflow: hidden; }
+        .bio-photo { width: 150px; height: 150px; border-radius: 2px; object-fit: cover; border: 1px solid var(--border); float: left; margin: 0 20px 10px 0; filter: sepia(0.2); cursor: zoom-in; }
+
+        /* Modal para ampliar foto */
+        #modal-foto { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; cursor: zoom-out; }
+        #foto-ampliada { max-width: 90%; max-height: 90%; border: 2px solid white; }
+
+        .bio-text h2 { font-family: 'Georgia', serif; font-size: 2rem; margin: 0 0 15px 0; border-bottom: 1px solid var(--border); display: inline-block; }
+        .bio-text p::first-letter { float: left; font-size: 3.5rem; line-height: 3rem; padding-top: 4px; padding-right: 8px; font-family: 'Georgia', serif; color: var(--primary); }
+        .bio-text p { font-size: 1.15rem; text-align: justify; }
+
+        .video-card { border-top: 1px solid var(--border); padding: 25px 0; margin-bottom: 10px; }
+        .video-card h3 { font-family: 'Georgia', serif; font-size: 1.6rem; margin: 0 0 20px 0; font-style: italic; }
+        
+        video, .img-seccion { width: 100%; border: 1px solid var(--border); padding: 5px; background: white; }
+
+        .btn-tiktok { display: block; width: fit-content; background: var(--primary); color: white; padding: 10px 20px; text-decoration: none; font-family: 'Arial', sans-serif; font-weight: bold; margin: 20px auto; }
+        footer { text-align: center; padding: 40px; border-top: 3px double var(--border); font-size: 0.9rem; margin: 20px; font-variant: all-small-caps; }
+    </style>
+</head>
+<body>
+
+<div id="modal-foto" onclick="this.style.display='none'">
+    <img id="foto-ampliada" src="perfil.jpg">
+</div>
+
+<header>
+    <h1>De Historias y Guerras</h1>
+</header>
+
+<nav>
+    <button onclick="openTab('bio')" id="defaultOpen">Bio</button>
+    <button onclick="openTab('entrevistas')">Entrevistas</button>
+    <button onclick="openTab('geopolitica')">Geopolítica</button>
+    <button onclick="openTab('dehistoria')">Dehistoria</button>
+    <button onclick="openTab('tiktok')">TikTok</button>
+</nav>
+
+<div class="container">
+    <div id="bio" class="tab-content">
+        <section class="bio-card">
+            <img src="perfil.jpg" alt="Pepe Jover" class="bio-photo" onclick="document.getElementById('modal-foto').style.display='flex'">
+            <div class="bio-text">
+                <h2>José María Jover Rubio (Pepe)</h2>
+                <p>Tengo 24 años y soy historiador por la <strong>UAM</strong>. Actualmente compagino mi pasión por la historia con un reto bastante exigente: las oposiciones a <strong>Técnico de la Administración Superior del Estado</strong>.</p>
+                <p>He creado este espacio para centralizar mi contenido de divulgación. Mi intención es tratar temas de memoria democrática y dar el salto a la geopolítica. Todo ello sin dejar de lado formatos más personales como los vlogs.</p>
+                <a href="https://www.tiktok.com/@dehistoriasyguerras?_r=1&_t=ZN-93tnzmQ6CBC" class="btn-tiktok" target="_blank">SÍGUEME EN TIKTOK</a>
+            </div>
+        </section>
+    </div>
+
+    <div id="entrevistas" class="tab-content">
+        <div class="video-card">
+            <h3>Vito Quiles en la Complutense: ¿qué opinan los alumnos?</h3>
+            <video controls poster="portada1.jpg">
+                <source src="entrevista1.mp4" type="video/mp4">
+            </video>
+        </div>
+        <div class="video-card">
+            <h3>Avance de Entrevista a Sergio Gómez Reyes, alcalde de Marinaleda</h3>
+            <video controls poster="portada2.jpg">
+                <source src="entrevista2.mp4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    <div id="geopolitica" class="tab-content">
+        <div class="video-card">
+            <h3>Crónica Internacional</h3>
+            <p>Análisis en profundidad sobre el escenario internacional actual. Próximamente disponible en esta cabecera.</p>
+        </div>
+    </div>
+
+    <div id="dehistoria" class="tab-content">
+        <div class="video-card">
+            <h3>Dehistoria: Archivo Visual</h3>
+            <img src="dehistoria.jpg" alt="Foto histórica" class="img-seccion">
+            <p style="text-align: center; font-weight: bold; margin-top: 10px;">[DOCUMENTO EN AVANCE]</p>
+        </div>
+    </div>
+
+    <div id="tiktok" class="tab-content">
+        <div class="video-card">
+            <h3>Archivo: El Maquis</h3>
+            <a href="https://vm.tiktok.com/ZNRf6mNHJ/" style="color:var(--primary); font-weight:bold; font-family:Arial;" target="_blank">ACCEDER A TIKTOK →</a>
+        </div>
+        <div class="video-card">
+            <h3>Archivo: Europa y ANHQV</h3>
+            <a href="https://vm.tiktok.com/ZNRf6VcfN/" style="color:var(--primary); font-weight:bold; font-family:Arial;" target="_blank">ACCEDER A TIKTOK →</a>
+        </div>
+        <div class="video-card">
+            <h3>Archivo: Último vídeo</h3>
+            <a href="https://vm.tiktok.com/ZNRf69pcr/" style="color:var(--primary); font-weight:bold; font-family:Arial;" target="_blank">ACCEDER A TIKTOK →</a>
+        </div>
+    </div>
+</div>
+
+<footer>
+    &copy; 2026 dehistoriasyguerras.com | Fundado para la Memoria y la Historia
+</footer>
+
+<script>
+function openTab(tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+        tabcontent[i].classList.remove("active");
+    }
+    tablinks = document.getElementsByTagName("button");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].classList.remove("active");
+    }
+    document.getElementById(tabName).style.display = "block";
+    document.getElementById(tabName).classList.add("active");
+    if (event) {
+        event.currentTarget.classList.add("active");
+    }
+}
+document.getElementById("defaultOpen").click();
+</script>
+
+</body>
+</html>
