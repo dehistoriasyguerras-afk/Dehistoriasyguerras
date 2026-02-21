@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>De Historias y Guerras | Crónica Histórica</title>
+    
+    <link rel="icon" type="image/png" href="favicon.png">
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <style>
+        /* ESTILO PERIODÍSTICO SERIO (BBC/CNN/EL PAÍS) */
+        :root { 
+            --news-red: #B80000; 
+            --dark-grey: #333333; 
+            --light-grey: #f4f4f4; 
+            --border-color: #e2e2e2;
+            --bullet-start: 140px;
+            --bullet-end: calc(100% + 50px);
+        }
+        
+        body { 
+            font-family: Helvetica, Arial, sans-serif; 
+            background: var(--light-grey); 
+            color: #111; 
+            margin: 0; 
+            padding: 0; 
+            line-height: 1.6; 
+            overflow-x: hidden;
+        }
+
+        /* CABECERA (HORIZONTAL GARANTIZADO) */
+        header { 
+            background: white;
+            padding: 30px 20px; 
+            border-bottom: 1px solid #ccc;
+            display: flex;
+            flex-direction: row; 
+            justify-content: center; 
+            align-items: center; 
+            gap: 25px; 
+            position: relative; 
+            overflow: hidden;
+            min-height: 110px; 
+        }
+        
+        .header-logo {
+            height: 110px; 
+            width: auto; 
+            max-width: 100%;
+            object-fit: contain; 
+            position: relative;
+            z-index: 5; 
+        }
+
+        .titulos-container {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        header h1 { 
+            font-family: 'Georgia', serif; 
+            font-size: clamp(1.5rem, 4vw, 4rem); 
+            margin: 0; 
+            font-weight: 900; 
+            letter-spacing: -1px; 
+            color: black;
+            text-transform: uppercase;
+            line-height: 1;
+            white-space: nowrap; 
+            position: relative;
+            z-index: 2;
+            perspective: 800px;
+        }
+
+        header h1 span {
+            display: inline-block;
+            transition: transform 0.3s cubic-bezier(0.2, 1, 0.3, 1), opacity 0.3s, filter 0.3s;
+            transform-origin: bottom center;
+            will-change: transform;
+        }
+
+        #lema-emergente {
+            position: absolute;
+            top: 50%; 
+            left: 50%; 
+            transform: translate(-50%, -50%); 
+            font-family: 'Georgia', serif;
+            font-size: clamp(1rem, 2.2vw, 2.2rem); 
+            color: var(--news-red);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            white-space: nowrap; 
+            z-index: 2;
+            opacity: 0;
+            transition: opacity 0.6s ease;
+            pointer-events: none;
+        }
+
+        #lema-emergente.visible {
+            opacity: 1;
+        }
+
+        .bala-negra {
+            position: absolute;
+            top: 50%; 
+            left: var(--bullet-start);
+            width: 40px;
+            height: 8px; 
+            background: #222;
+            border-radius: 3px 50% 50% 3px;
+            transform: translateY(-50%);
+            z-index: 3; 
+            pointer-events: none;
+        }
+
+        .disparando {
+            animation: vuelo-bala-dinamico 5s linear forwards;
+        }
+
+        @keyframes vuelo-bala-dinamico {
+            0% { left: var(--bullet-start); }
+            100% { left: var(--bullet-end); }
+        }
+
+        /* NAVEGACIÓN PC */
+        nav { 
+            background: var(--news-red); 
+            display: flex; 
+            justify-content: center; 
+            position: sticky; 
+            top: 0; 
+            z-index: 1000; 
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            flex-wrap: wrap; 
+        }
+        
+        nav button { 
+            background: none; 
+            border: none; 
+            color: white; 
+            font-weight: 700; 
+            cursor: pointer; 
+            font-size: 0.9rem; 
+            text-transform: uppercase; 
+            padding: 15px 20px; 
+            font-family: Helvetica, Arial, sans-serif; 
+            transition: background 0.2s;
+            white-space: nowrap;
+        }
+        nav button:hover { background: rgba(0,0,0,0.2); }
+        nav button.active { background: white; color: var(--news-red); }
+
+        /* CONTENEDOR */
+        .container { 
+            max-width: 900px; 
+            margin: 0 auto; 
+            padding: 40px 20px; 
+            background: white; 
+            min-height: 80vh;
+            border-left: 1px solid #ddd;
+            border-right: 1px solid #ddd;
+        }
+        .tab-content { display: none; animation: fadeIn 0.3s ease-in-out; }
+        .tab-content.active { display: block; }
+
+        /* BIO */
+        .bio-card { 
+            display: flex; 
+            flex-wrap: wrap; 
+            gap: 20px; 
+            padding-bottom: 20px; 
+            border-bottom: 1px solid var(--border-color); 
+            margin-bottom: 30px;
+        }
+        .bio-photo { 
+            width: 200px; 
+            height: 200px; 
+            object-fit: cover; 
+            cursor: zoom-in; 
+            flex-shrink: 0;
+            border: 1px solid #ccc;
+        }
+        .bio-text { flex: 1; min-width: 300px; }
+        .bio-text h2 { 
+            font-family: 'Georgia', serif; 
+            font-size: 2.2rem; 
+            margin: 0 0 10px 0; 
+            color: #000; 
+            line-height: 1.1;
+        }
+        .bio-text p { 
+            font-size: 1.1rem; 
+            color: #333; 
+            text-align: left; 
+            margin-bottom: 15px;
+        }
+
+        /* VIDEOS */
+        .video-card { 
+            margin-bottom: 40px; 
+            padding-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            display: block;
+        }
+
+        /* ESTILOS CITA GEOPOLÍTICA */
+        #cita-twain {
+            font-family: 'Georgia', serif;
+            font-size: 1.8rem;
+            text-align: center;
+            margin-bottom: 20px;
+            font-style: italic;
+            font-weight: normal;
+            color: #111;
+            position: relative;
+            min-height: 1.8rem; 
+        }
+        
+        .quote-letter {
+            display: inline-block;
+            color: #111;
+            transform-origin: bottom center;
+            transition: color 0.5s ease-out; 
+            will-change: transform, opacity;
+        }
+        .quote-letter.is-red { color: #8a0303; }
+        @keyframes single-letter-drop {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            70% { opacity: 1; } 
+            100% { transform: translateY(600px) rotate(45deg); opacity: 0; } 
+        }
+        .quote-letter.falling { animation: single-letter-drop 1.2s ease-in forwards; }
+
+        .video-card h3:not(#cita-twain) { 
+            font-family: 'Georgia', serif; 
+            font-size: 1.8rem; 
+            margin: 0 0 15px 0; 
+            font-weight: bold; 
+            color: #111;
+        }
+        
+        video, .img-seccion { 
+            display: block; 
+            width: 100%; 
+            height: auto; 
+            background: black; 
+            margin-top: 10px; 
+        }
+
+        /* === REDUCCIÓN DE TAMAÑO EN PC PARA LA FOTO DEL BESO === */
+        @media (min-width: 601px) {
+            #contenedor-beso-pc {
+                width: 60%; 
+                margin: 0 auto; 
+            }
+        }
+
+        /* EFECTO DE BRILLO PARA LA FOTO DEL BESO */
+        .foto-interactiva {
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            border-radius: 4px;
+        }
+        @media (min-width: 601px) {
+            .foto-interactiva:hover {
+                transform: scale(1.02); 
+                box-shadow: 0 0 25px rgba(184, 0, 0, 0.85); 
+            }
+        }
+        @keyframes latido-brillo {
+            0% { box-shadow: 0 0 5px rgba(184, 0, 0, 0.3); }
+            50% { box-shadow: 0 0 20px rgba(184, 0, 0, 0.9); }
+            100% { box-shadow: 0 0 5px rgba(184, 0, 0, 0.3); }
+        }
+        @media (max-width: 600px) {
+            .foto-interactiva {
+                animation: latido-brillo 2.5s infinite; 
+            }
+        }
+
+        /* ESTILOS ARTÍCULOS */
+        .article-content h4 {
+            font-family: 'Georgia', serif;
+            font-size: 1.3rem;
+            color: #111;
+            margin-top: 35px;
+            border-bottom: 2px solid var(--news-red);
+            padding-bottom: 5px;
+            display: inline-block;
+        }
+        .article-content p { text-align: justify; margin-bottom: 15px; font-size: 1.05rem; color: #222; }
+        
+        .quote-box { background-color: #f8f8f8; border-left: 6px solid var(--news-red); padding: 25px; margin: 30px 0; display: flex; gap: 25px; align-items: center; box-shadow: 0 2px 5px rgba(0,0,0,0.05); }
+        .quote-img { width: 160px; height: auto; border: 1px solid #999; flex-shrink: 0; padding: 3px; background: white; cursor: zoom-in; }
+        .quote-text { font-family: 'Georgia', serif; font-style: italic; font-size: 1.15rem; color: #333; line-height: 1.6; }
+        .quote-caption { font-family: Arial, sans-serif; font-size: 0.8rem; color: #666; margin-top: 10px; font-style: normal; border-top: 1px solid #ddd; padding-top: 5px; }
+
+        .figure-box { margin: 30px 0; background: #fff; border: 1px solid #ddd; padding: 5px; }
+        .figure-box img { width: 100%; height: auto; display: block; cursor: zoom-in; }
+        .figure-caption { font-size: 0.85rem; color: #555; padding: 10px; background: #f9f9f9; border-top: 1px solid #ddd; font-family: Arial, sans-serif; line-height: 1.4; }
+
+        .intro-box { background-color: #fff8e1; padding: 15px; border: 1px solid #eec; margin-bottom: 25px; color: #555; font-size: 0.95rem; font-style: italic; }
+
+        .bibliography { background: #fdfdfd; padding: 20px; border-top: 1px solid #ddd; font-size: 0.9rem; color: #444; margin-top: 40px; }
+        .bibliography li { margin-bottom: 8px; }
+        
+        .btn-tiktok { display: inline-block; background: black; color: white; padding: 12px 25px; text-decoration: none; font-weight: bold; font-size: 0.9rem; margin-top: 10px; text-transform: uppercase; }
+        .btn-tiktok:hover { background: var(--news-red); }
+
+        footer { background: #1a1a1a; color: #ccc; text-align: center; padding: 30px; font-size: 0.85rem; margin-top: 0; }
+
+        #modal-foto { display: none; position: fixed; z-index: 9999; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); justify-content: center; align-items: center; cursor: zoom-out; }
+        #foto-ampliada { max-width: 95%; max-height: 95%; border: 3px solid white; object-fit: contain; }
+
+        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+
+        /* =========================================
+           CORRECCIÓN PARA MÓVILES (MENÚ 1 LÍNEA)
+           ========================================= */
+        @media (max-width: 600px) {
+            header {
+                flex-direction: row; 
+                justify-content: flex-start; 
+                gap: 10px;
+                padding: 10px 10px;
+                min-height: 70px; /* Cabecera fina */
+            }
+            .header-logo { height: 50px; flex-shrink: 0; }
+            .titulos-container { flex: 1; justify-content: flex-start; }
+            header h1 { font-size: clamp(0.9rem, 4.5vw, 1.4rem); text-align: left; }
+            
+            #lema-emergente {
+                left: 0;
+                transform: translate(0, -50%);
+                font-size: clamp(0.7rem, 2.5vw, 1rem); 
+            }
+            #lema-emergente.visible { transform: translate(0, -50%); }
+            
+            .bala-negra { height: 6px; width: 30px; }
+
+            /* NAVEGACIÓN EN UNA SOLA LÍNEA DE 1 */
+            nav {
+                flex-wrap: nowrap; /* ESTO FUERZA A QUE NO SALTEN DE LÍNEA */
+                overflow: hidden; /* Nada de barras de scroll raras */
+            }
+            nav button { 
+                padding: 12px 1px; /* Casi nada de margen entre botones */
+                font-size: clamp(0.55rem, 2.2vw, 0.8rem); /* Letra ultra elástica */
+                flex: 1; /* Ocupan todo el ancho por igual */
+                min-width: 0; /* Permite comprimir las palabras */
+                letter-spacing: -0.3px; /* Junta las letras un poquito */
+                text-align: center;
+            }
+
+            .bio-card { flex-wrap: nowrap; align-items: flex-start; gap: 15px; }
+            .bio-photo { width: 120px; height: 120px; margin-bottom: 0; }
+            .bio-text { min-width: auto; }
+            .bio-text h2 { font-size: 1.5rem; }
+            .quote-box { flex-direction: column; text-align: center; }
+            .quote-img { width: 120px; margin: 0 auto 15px auto; }
+        }
+    </style>
+    
+    <script src="https://www.youtube.com/iframe_api"></script>
+</head>
+<body>
+
+<div id="modal-foto" onclick="this.style.display='none'">
+    <img id="foto-ampliada" src="">
+</div>
+
+<header id="zona-cabecera">
+    <img src="logo.png" alt="Escudo D&G" class="header-logo" id="logo-principal">
+    <div class="titulos-container">
+        <h1 id="titulo-principal">De Historias y Guerras</h1>
+        <h2 id="lema-emergente">Geopolítica, Historia, Actualidad</h2>
+    </div>
+</header>
+
+<nav>
+    <button onclick="openTab('bio')" id="defaultOpen">Bio</button>
+    <button onclick="openTab('geopolitica')" id="btn-geopolitica">Geopolítica</button>
+    <button onclick="openTab('espana')">España</button>
+    <button onclick="openTab('dehistoria')">Dehistoria</button>
+    <button onclick="openTab('entrevistas')">Entrevistas</button>
+    <button onclick="openTab('mis-videos')">Mis Vídeos</button>
+</nav>
+
+<div class="container">
+    <div id="bio" class="tab-content">
+        <section class="bio-card">
+            <img src="perfil.jpg" alt="Pepe Jover" class="bio-photo">
+            <div class="bio-text">
+                <h2>José María Jover Rubio (Pepe)</h2>
+                <p>Tengo 24 años y soy historiador por la <strong>UAM</strong>. Actualmente compagino mi pasión por la historia con un reto bastante exigente: las oposiciones a <strong>Técnico de la Administración Superior del Estado</strong>.</p>
+                <p>He creado este espacio para centralizar mi contenido de divulgación. Mi intención es tratar temas de memoria democrática y dar el salto a la geopolítica. Todo ello sin dejar de lado formatos más personales como los vlogs.</p>
+                <a href="https://www.tiktok.com/@dehistoriasyguerras?_r=1&_t=ZN-93tnzmQ6CBC" class="btn-tiktok" target="_blank">SÍGUEME EN TIKTOK</a>
+            </div>
+        </section>
+    </div>
+
+    <div id="geopolitica" class="tab-content">
+        <div class="video-card">
+            <h3 id="cita-twain">«Porque la historia no se repite, pero rima.» Mark Twain.</h3>
+            <img src="image_11.png" alt="Tanque y barco histórico" class="img-seccion" id="img-tanque" loading="lazy" style="cursor: zoom-in;">
+            <p style="text-align: center; font-style: italic; font-size: 0.9rem; color: #666; margin-top: 15px;">
+                Imagen editada por inteligencia artificial en base a una ilustración española de 1873 y una imagen de la Guerra de Ucrania actual.
+            </p>
+        </div>
+        <div class="video-card">
+            <h3>Crónica Internacional</h3>
+            <p>Análisis en profundidad sobre el escenario internacional actual. Próximamente disponible en esta cabecera.</p>
+        </div>
+    </div>
+
+    <div id="espana" class="tab-content">
+        <div class="video-card">
+            <h3>Crónica Nacional</h3>
+            <p>Análisis y actualidad sobre España. Próximamente disponible en esta cabecera.</p>
+        </div>
+    </div>
+
+    <div id="dehistoria" class="tab-content">
+        
+        <div class="figure-box" style="border:none; margin-bottom:40px; padding:0; background:transparent;">
+            <h3>Dehistoria: Archivo Visual</h3>
+            
+            <div id="contenedor-beso-pc">
+                <div id="youtube-facade-beso" onclick="cargarVideoBeso()" style="position: relative;">
+                    <img src="dehistoria.jpg" alt="Foto histórica" class="img-seccion no-modal foto-interactiva" loading="lazy" style="margin-top: 10px; width: 100%; display: block;">
+                </div>
+                
+                <div id="video-wrapper" style="display: none; width: 100%; margin-top: 10px; border-radius: 5px; overflow: hidden; background: black;">
+                    <div id="yt-player" style="width: 100%; height: 100%;"></div>
+                </div>
+                
+                <div class="figure-caption" style="text-align: center; margin-top: 0; background: #f9f9f9;">
+                    El beso de Juan García Oliver; anarquista y ministro de justicia
+                </div>
+            </div>
+        </div>
+
+        <div class="video-card" onclick="toggleSection('sigloXIX-content')" style="cursor: pointer; border-left: 5px solid var(--news-red); background-color: #fdfdfd; transition: 0.3s;">
+            <h3 style="margin:0; display:flex; justify-content:space-between; align-items:center;">
+                España en el siglo XIX 
+                <span style="font-size: 1.5rem; color: var(--news-red);">+</span>
+            </h3>
+            <p style="margin: 5px 0 0 0; color: #666;">Haz clic para desplegar este periodo histórico.</p>
+        </div>
+        
+        <div id="sigloXIX-content" style="display: none; padding: 20px 0;">
+            <div class="video-card" onclick="toggleSection('primera-republica-content')" style="cursor: pointer; border-left: 3px solid #666; background-color: #f4f4f4; margin-bottom: 20px;">
+                <h4 style="margin:0; display:flex; justify-content:space-between; align-items:center; font-size: 1.2rem;">
+                    Primera República (1873)
+                    <span style="font-size: 1.2rem; color: #666;">+</span>
+                </h4>
+            </div>
+
+            <div id="primera-republica-content" class="article-content" style="display: none; padding: 30px; border: 1px solid #e2e2e2; background: white; margin-bottom: 30px;">
+                <h3 style="font-family:'Georgia',serif; font-size:2rem; margin-top:0; margin-bottom:10px; color:#000;">Cartagena Cantonal ¿un sueño para todos?</h3>
+                <h4 style="border:none; margin-top:0; font-size:1.2rem; color:#666; font-weight:normal;">1873: La lucha por una nación justa</h4>
+                
+                <div class="quote-box">
+                    <img src="lopez.jpg" alt="General López Domínguez" class="quote-img" loading="lazy">
+                    <div class="quote-text">
+                        «¿Por qué no lo hemos de decir? La defensa de Cartagena honra a los jefes que la han dirigido y es digna de mejor causa. En ella se refleja el valor, la energía y el tesón del veterano general Contreras; los conocimientos facultativos y la frialdad y el cálculo del general Ferrer; el carácter y el fanatismo del diputado Gálvez».
+                        <div class="quote-caption">
+                            (Isidoro Martínez Rizo, <em>Fechos y fechas de Cartagena (primera serie)</em>, (Cartagena: imp. De Hipólito García e hijos, 1894), 3). Véase también en <em>El Cantón de Cartagena</em> (1979), de Maria-Alice Medioni, p. 67.
+                            <br><br>
+                            <strong>Fig 1.</strong> General López Domínguez (1829-1911) Retrato de José Moreno Carbonero, cuando el militar tenía 77 años. Óleo, Senado.
+                        </div>
+                    </div>
+                </div>
+
+                <div class="intro-box">
+                    <p style="margin:0;"><strong>Sobre esta investigación:</strong> En el presente artículo sintetizamos los hallazgos y el análisis de nuestro Trabajo de Fin de Grado (TFG), centrado en desmitificar la insurrección de 1873. Nuestro objetivo es demostrar que Cartagena no buscaba la ruptura con España, sino la aplicación de un modelo de justicia social y política que Madrid se negaba a ejecutar.</p>
+                </div>
+
+                <p>Históricamente, nos hemos encontrado con que la imagen del Cantón de Cartagena ha estado ligada a un mito de fragmentación nacional. Lamentablemente, la propia Real Academia Española ayudó a consolidar esta visión al definir el cantonalismo como una "tendencia a la fragmentación de un Estado Unitario en territorios casi independientes" (Jeanne Moisand, <em>Federación o muerte. los mundos posibles del Cantón de Cartagena (1873)</em>, pág. 9). Sin embargo, al acudir a la realidad que documentan las fuentes coetáneas, observamos que los cartageneros buscaban salvar a la nación mediante un federalismo radical construido "de abajo hacia arriba" (Florencia Peyrou Tubert, <em>La Primera República. Auge y destrucción de una experiencia democrática</em>, pág. 342).</p>
+
+                <h4>Las raíces de un levantamiento por la justicia</h4>
+                <p>Si analizamos el estallido del 12 de julio de 1873, comprendemos que no fue un simple acto de rebeldía localista. Fue, ante todo, la respuesta a una situación de precariedad extrema en una ciudad con una enorme masa proletaria. En aquel momento, como hemos podido constatar, "se trataba de un pueblo que tenía hambre y al que los oradores de la República le prometían pan" (Isidoro Valverde, <em>Los cantonales</em>, pág. 40).</p>
+                
+                <p>Este movimiento se fundamentaba en pilares que los insurrectos estimaban esenciales para la salud de España:</p>
+                <ul style="list-style-type: square; padding-left: 20px; color: #333; margin-bottom:20px;">
+                    <li style="margin-bottom:10px;"><strong>Soberanía Municipal:</strong> El deseo de recuperar el control de los bienes del ayuntamiento y de los bienes comunales frente al centralismo asfixiante (Juan Bautista Vilar y Pedro María Egea Bruno, <em>La minería murciana contemporánea</em>, pág. 80).</li>
+                    <li><strong>Justicia contra el "absolutismo" republicano:</strong> Los insurrectos denunciaban que los gobernantes de Madrid se llamaban republicanos pero gobernaban "como lo haría un rey absoluto" (<em>El Cantón Murciano: Diario oficial de la federación</em>, n.º 5, 26.07.1873, pág. 1).</li>
+                </ul>
+
+                <h4>Un proyecto de vocación nacional</h4>
+                <p>La prueba definitiva que presentamos de que el Cantón no buscaba la secesión es contundente: al constituirse la Junta Revolucionaria, sus líderes no crearon un ministerio local, sino que establecieron un "Poder Ejecutivo de la nación española" (<em>Diario de Sesión de Cortes</em>, n.º 86, 06.09.1873, pág. 2109). Su objetivo era forzar la creación de una estructura federal que consideraban válida para todo el país, no solo para su región.</p>
+                <p>Esta voluntad fue reconocida incluso por sus opositores más directos. Francisco Pi i Margall, ante las Cortes en septiembre de 1873, afirmó con la mano en el corazón que los hombres de Cartagena habían "trabajado por la unidad de la Patria como nosotros mismos" (<em>Diario de Sesión de Cortes</em>, n.º 86, 06.09.1873, pág. 2109).</p>
+
+                <h4>El conflicto internacional</h4>
+                <p>El conflicto adquirió tintes internacionales cuando el gobierno central decretó piratas a los barcos cantonales. Esto provocó la intervención de potencias extranjeras como Alemania o Reino Unido, que apresaron buques de los insurrectos.</p>
+
+                <div class="figure-box">
+                    <img src="vigilante.jpg" alt="Apresamiento del vapor Vigilante" loading="lazy">
+                    <div class="figure-caption">
+                        Fig 9. Bajo el título «El vapor Vigilante, tripulado por insurrectos de Cartagena, es apresado por la fragata alemana, Federico Carlos» mostraba el 1 de agosto de 1873 <em>La Ilustración Española</em> (página 476) a las fuerzas alemanas deteniendo la nave. 
+                    </div>
+                </div>
+
+                <p>Otro episodio clave fue la expedición del general Contreras para sublevar regiones vecinas. Llegó a Almería el 29 de julio, pero no logró recabar el apoyo necesario. En el enfrentamiento con la guarnición, se produjo uno de los episodios más controvertidos: el bombardeo de la ciudad por parte de la escuadra cantonal.</p>
+
+                <div class="figure-box">
+                    <img src="almeria.jpg" alt="Bombardeo de Almería" loading="lazy">
+                    <div class="figure-caption">
+                        Fig 10. Mostraba <em>Le Monde Illustré</em> el bombardeo de Almería por la Vitoria y Almansa. Junto a la ilustración expone: «El bombardeo de Almería por las naves insurrectas Almansa y Vitoria, capturadas por la marina prusiana». 23 de agosto de 1873, página 124.
+                    </div>
+                </div>
+
+                <h4>El sacrificio de la "utopía política"</h4>
+                <p>Debemos entender que la resistencia de seis meses frente al asedio de Madrid, que lanzó más de 25.000 proyectiles contra la plaza, no fue un ejercicio de terquedad regionalista (José López Domínguez, <em>Cartagena. Memoria y comentarios sobre el sitio de Cartagena</em>, pág. 115). Los defensores aguantaron bombardeos constantes y tragedias como la explosión del Parque de Artillería, donde murieron más de 400 civiles que se refugiaban en el lugar.</p>
+                
+                <div class="figure-box">
+                    <img src="portman.jpg" alt="Batalla de Portman" loading="lazy">
+                    <div class="figure-caption">
+                        Fig 11. <em>The London Illustrated News</em> se hacía eco de la Batalla de Portman el 1 de noviembre de 1873. Junto a la imagen se enunciaba: <em>The Civil War in Spain: The Battle of Escombrera</em>.
+                    </div>
+                </div>
+
+                <p>Como concluye nuestra investigación, los ciudadanos no se levantaron por un patriotismo localista, sino por una "utopía política y social que estimaban válida para todos los españoles y cuyo advenimiento creían acercar con una denodada resistencia" (José María Jover Zamora, prólogo a <em>El Cantón Murciano</em>, pág. LI). La gesta de Cartagena fue, en esencia, el intento de una ciudad por refundar la nación desde la justicia y la libertad municipal.</p>
+
+                <div class="figure-box">
+                    <img src="cartagena.jpg" alt="Fugitivos en botes" loading="lazy">
+                    <div class="figure-caption">
+                        Fig 19. «Fugitivos de la plaza en botes de las escuadras extranjeras». <em>La Ilustración Española y Americana</em>, 8 de enero de 1874, pág. 4.
+                    </div>
+                </div>
+
+                <div class="bibliography">
+                    <h5 style="margin-top:0; font-family:'Georgia',serif; font-size:1.1rem; border-bottom:1px solid #ddd; padding-bottom:5px;">Bibliografía Citada</h5>
+                    <ul style="padding-left:20px; color:#555;">
+                        <li><em>Diario de Sesión de Cortes</em>, legislatura 1873-1874, n.º 86, 6 de septiembre de 1873.</li>
+                        <li><em>El Cantón Murciano: Diario oficial de la federación</em>, n.º 5, 26 de julio de 1873.</li>
+                        <li>Jover Zamora, José María, prólogo a <em>El Cantón Murciano</em>, de Antonio Puig Campillo (Cartagena: Editora Regional de Murcia, 1986).</li>
+                        <li>López Domínguez, José, <em>Cartagena. Memoria y comentarios sobre el sitio de Cartagena</em> (Madrid: Establecimiento tipográfico de J. Conde y Cía, 1877).</li>
+                        <li>Moisand, Jeanne, <em>Federación o muerte. Los mundos posibles del Cantón de Cartagena (1873)</em> (Madrid: Catarata, 2023).</li>
+                        <li>Peyrou Tubert, Florencia, <em>La Primera República. Auge y destrucción de una experiencia democrática</em> (Madrid: Akal, 2023).</li>
+                        <li>Valverde, Isidoro, <em>Los cantonales</em> (Cartagena: Athenas Ediciones, 1971).</li>
+                        <li>Vilar, Juan Bautista y Egea Bruno, Pedro María, <em>La minería murciana</em>.</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="video-card" onclick="toggleSection('sigloXX-content')" style="cursor: pointer; border-left: 5px solid var(--news-red); background-color: #fdfdfd; transition: 0.3s; margin-top: 20px;">
+            <h3 style="margin:0; display:flex; justify-content:space-between; align-items:center;">
+                España en el siglo XX
+                <span style="font-size: 1.5rem; color: var(--news-red);">+</span>
+            </h3>
+            <p style="margin: 5px 0 0 0; color: #666;">Archivo Audiovisual y Guerra Civil.</p>
+        </div>
+
+        <div id="sigloXX-content" style="display: none; padding: 20px 0;">
+            <div class="video-card" onclick="toggleSection('guerra-civil-content')" style="cursor: pointer; border-left: 3px solid #666; background-color: #f4f4f4; margin-bottom: 20px;">
+                <h4 style="margin:0; display:flex; justify-content:space-between; align-items:center; font-size: 1.2rem;">
+                    La Guerra Civil
+                    <span style="font-size: 1.2rem; color: #666;">+</span>
+                </h4>
+            </div>
+
+            <div id="guerra-civil-content" class="article-content" style="display: none; padding: 30px; border: 1px solid #e2e2e2; border-top: none; background: white; margin-bottom: 30px;">
+                <h3 style="font-family:'Georgia',serif; font-size:2rem; margin-top:0; margin-bottom:10px; color:#000;">El Ojo de Hearst: La Guerra Civil</h3>
+                <p>Presentamos material inédito grabado originalmente para los noticiarios estadounidenses del magnate William Randolph Hearst.</p>
+
+                <div class="video-card" style="border:none; padding:0; margin-bottom: 40px;">
+                    <h4 style="margin-top:0; font-family:'Georgia', serif;">Pozuelo de Alarcón: Zona Cero (8 de enero, 1937)</h4>
+                    <video controls playsinline poster="portada_pozuelo.jpg" preload="none" style="width:100%; height:auto; margin-top:10px;">
+                        <source src="pozuelo.mp4" type="video/mp4">
+                    </video>
+                    <p style="font-size: 0.95rem; color: #444; margin-top: 10px; font-style: italic; background: #f9f9f9; padding: 15px; border-left: 4px solid var(--news-red);">
+                        «En este documento histórico, la cámara recorre lo que queda de Pozuelo de Alarcón tras caer en manos de las tropas sublevadas. Habiendo sido uno de los frentes más duros en la defensa de Madrid, la localidad aparece espectral, completamente arrasada por la aviación y la artillería rebelde. Un testimonio mudo de la devastación fratricida fechado el 8 de enero de 1937.»
+                    </p>
+                </div>
+
+                <div class="video-card" style="border:none; padding:0;">
+                    <h4 style="margin-top:0; font-family:'Georgia', serif;">Sierra de Teruel (1938): una película sobre la guerra civil grabada en plena guerra civil</h4>
+                    <video controls playsinline poster="portada_sierra.jpg" preload="none" style="width:100%; height:auto; margin-top:10px;">
+                        <source src="sierra.mp4" type="video/mp4">
+                    </video>
+                    <p style="font-size: 0.95rem; color: #444; margin-top: 10px; font-style: italic; background: #f9f9f9; padding: 15px; border-left: 4px solid var(--news-red);">
+                        Dirigida por André Malraux bajo el título "Espoir, sierra de Teruel". Secuencia grabada en Tarragona.
+                    </p>
+                    <a href="https://vm.tiktok.com/ZNRfvCdMV/" class="btn-tiktok" target="_blank" style="margin-top:10px;">VER EXPLICACIÓN EN TIKTOK</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="entrevistas" class="tab-content">
+        <div class="video-card">
+            <h3>Vito Quiles en la Complutense: ¿qué opinan los alumnos?</h3>
+            <video controls playsinline poster="portada1.jpg" preload="none" style="width:100%; height:auto;">
+                <source src="entrevista1.MP4" type="video/mp4">
+            </video>
+        </div>
+        <div class="video-card">
+            <h3>Avance de Entrevista a Sergio Gómez Reyes, alcalde de Marinaleda</h3>
+            <video controls playsinline poster="portada2.jpg" preload="none" style="width:100%; height:auto;">
+                <source src="entrevista2.MP4" type="video/mp4">
+            </video>
+        </div>
+    </div>
+
+    <div id="mis-videos" class="tab-content">
+        <div class="video-card">
+            <h3>Archivo: El Maquis</h3>
+            <a href="https://vm.tiktok.com/ZNRf6mNHJ/" style="color:var(--news-red); font-weight:bold; font-family:Arial;" target="_blank">ACCEDER A TIKTOK →</a>
+        </div>
+        <div class="video-card">
+            <h3>Archivo: Europa y ANHQV</h3>
+            <a href="https://vm.tiktok.com/ZNRf6VcfN/" style="color:var(--news-red); font-weight:bold; font-family:Arial;" target="_blank">ACCEDER A TIKTOK →</a>
+        </div>
+        <div class="video-card">
+            <h3>Archivo: Último vídeo</h3>
+            <a href="https://vm.tiktok.com/ZNRf69pcr/" style="color:var(--news-red); font-weight:bold; font-family:Arial;" target="_blank">ACCEDER A TIKTOK →</a>
+        </div>
+    </div>
+</div>
+
+<footer>
+    &copy; 2026 dehistoriasyguerras.com | Fundado para la Memoria y la Historia
+</footer>
+
+<script>
+// --- INICIALIZACIÓN API YOUTUBE (EVITA BLOQUEO EN MÓVIL) ---
+var ytPlayer;
+function onYouTubeIframeAPIReady() {
+    // Pre-cargamos el reproductor de forma invisible detrás de la foto
+    ytPlayer = new YT.Player('yt-player', {
+        videoId: 'Mj3Hk3bKNSY',
+        playerVars: {
+            'playsinline': 1,
+            'controls': 0, // Adiós botones molestos
+            'modestbranding': 1, // Adiós logo YouTube
+            'rel': 0, // No recomendar otros canales
+            'disablekb': 1,
+            'fs': 0
+        }
+    });
+}
+
+function cargarVideoBeso() {
+    const facade = document.getElementById('youtube-facade-beso');
+    const wrapper = document.getElementById('video-wrapper');
+    
+    // Leemos la altura de la imagen
+    const alturaImagen = facade.querySelector('img').clientHeight || 450;
+    
+    // Cambiamos la imagen por el vídeo y respetamos el tamaño exacto
+    facade.style.display = 'none';
+    wrapper.style.display = 'block';
+    wrapper.style.height = alturaImagen + 'px';
+    
+    // Como esto ocurre dentro del "click" manual del usuario, iOS/Android permite el autoplay sin bloquearlo
+    if (ytPlayer && typeof ytPlayer.playVideo === 'function') {
+        ytPlayer.playVideo();
+    }
+}
+
+// Pestañas CON MEMORIA
+let geopoliticaVisitada = false;
+
+function openTab(tabName) {
+    var i, tabcontent, tablinks;
+    tabcontent = document.getElementsByClassName("tab-content");
+    for (i = 0; i < tabcontent.length; i++) {
+        tabcontent[i].style.display = "none";
+        tabcontent[i].classList.remove("active");
+    }
+    
+    tablinks = document.querySelectorAll("nav button");
+    for (i = 0; i < tablinks.length; i++) {
+        tablinks[i].classList.remove("active");
+        if (tablinks[i].getAttribute("onclick").includes(tabName)) {
+            tablinks[i].classList.add("active");
+        }
+    }
+    document.getElementById(tabName).style.display = "block";
+    document.getElementById(tabName).classList.add("active");
+    
+    localStorage.setItem('pestanaActiva', tabName);
+    
+    // Animación cita Geopolítica
+    if (tabName === 'geopolitica' && !geopoliticaVisitada) {
+        geopoliticaVisitada = true; 
+        
+        setTimeout(() => {
+            const quoteLetters = document.querySelectorAll('#cita-twain .quote-letter');
+            quoteLetters.forEach(letter => { letter.classList.add('is-red'); });
+
+            setTimeout(() => {
+                 quoteLetters.forEach((letter, index) => {
+                    letter.style.animationDelay = `${index * 30}ms`;
+                    letter.classList.add('falling');
+                });
+                const totalTime = (quoteLetters.length * 30) + 1200 + 100; 
+                setTimeout(() => {
+                     const quoteContainer = document.getElementById('cita-twain');
+                     if(quoteContainer) quoteContainer.style.display = 'none';
+                }, totalTime);
+            }, 2000); 
+        }, 500); 
+    }
+}
+
+// Desplegables CON MEMORIA
+function toggleSection(id) {
+    var x = document.getElementById(id);
+    let seccionesAbiertas = JSON.parse(localStorage.getItem('seccionesAbiertas')) || [];
+
+    if (x.style.display === "none" || x.style.display === "") {
+        x.style.display = "block";
+        if (!seccionesAbiertas.includes(id)) { seccionesAbiertas.push(id); }
+    } else {
+        x.style.display = "none";
+        seccionesAbiertas = seccionesAbiertas.filter(secId => secId !== id);
+    }
+    localStorage.setItem('seccionesAbiertas', JSON.stringify(seccionesAbiertas));
+}
+
+// Zoom Fotos y Letras
+document.addEventListener("DOMContentLoaded", function() {
+    var modal = document.getElementById("modal-foto");
+    var modalImg = document.getElementById("foto-ampliada");
+    var todasLasImagenes = document.querySelectorAll(".container img:not(.no-modal)");
+
+    todasLasImagenes.forEach(function(img) {
+        img.style.cursor = "zoom-in"; 
+        img.onclick = function(){ modal.style.display = "flex"; modalImg.src = this.src; }
+    });
+
+    const h1 = document.getElementById('titulo-principal');
+    if (h1) {
+        const textoH1 = h1.innerText;
+        h1.innerHTML = '';
+        textoH1.split('').forEach(letra => {
+            const span = document.createElement('span');
+            span.innerHTML = letra === ' ' ? '&nbsp;' : letra;
+            h1.appendChild(span);
+        });
+    }
+
+    const quoteH3 = document.getElementById('cita-twain');
+    if (quoteH3) {
+        const quoteText = quoteH3.innerText;
+        quoteH3.innerHTML = ''; 
+        const palabras = quoteText.split(' ');
+        
+        palabras.forEach((palabra, index) => {
+            const wordSpan = document.createElement('span');
+            wordSpan.style.display = 'inline-block';
+            wordSpan.style.whiteSpace = 'nowrap';
+            
+            palabra.split('').forEach(char => {
+                const charSpan = document.createElement('span');
+                charSpan.textContent = char;
+                charSpan.className = 'quote-letter';
+                wordSpan.appendChild(charSpan);
+            });
+            quoteH3.appendChild(wordSpan);
+            if (index < palabras.length - 1) { quoteH3.appendChild(document.createTextNode(' ')); }
+        });
+    }
+});
+
+// BALA DE CABECERA Y LEMA
+window.addEventListener("load", function() {
+    const pestanaGuardada = localStorage.getItem('pestanaActiva');
+    if (pestanaGuardada) { openTab(pestanaGuardada); } 
+    else { document.getElementById("defaultOpen").click(); }
+
+    const seccionesGuardadas = JSON.parse(localStorage.getItem('seccionesAbiertas')) || [];
+    seccionesGuardadas.forEach(id => {
+        const seccion = document.getElementById(id);
+        if (seccion) { seccion.style.display = "block"; }
+    });
+
+    setTimeout(() => {
+        const cabecera = document.getElementById('zona-cabecera');
+        const logo = document.getElementById('logo-principal');
+        const bala = document.createElement('div');
+        bala.className = 'bala-negra disparando';
+        cabecera.appendChild(bala);
+        
+        const headerRect = cabecera.getBoundingClientRect();
+        const logoRect = logo.getBoundingClientRect();
+        
+        const startPos = (logoRect.right - headerRect.left) - 10;
+        const endPos = headerRect.width + 50; 
+
+        cabecera.style.setProperty('--bullet-start', `${startPos}px`);
+        cabecera.style.setProperty('--bullet-end', `${endPos}px`);
+
+        const duracionBala = 5000; 
+        const recorridoTotal = endPos - startPos; 
+        const velocidad = recorridoTotal / duracionBala; 
+        
+        const spans = document.querySelectorAll('#titulo-principal span');
+        const lema = document.getElementById('lema-emergente');
+
+        spans.forEach(span => {
+            const spanRect = span.getBoundingClientRect();
+            const posLetraAbsoluta = spanRect.left - headerRect.left;
+            const distanciaHastaLetra = posLetraAbsoluta - startPos;
+            
+            const tiempoImpacto = distanciaHastaLetra > 0 ? distanciaHastaLetra / velocidad : 0;
+            
+            setTimeout(() => {
+                span.style.transform = 'rotateX(90deg) skewX(15deg)';
+                span.style.opacity = '0'; 
+            }, tiempoImpacto);
+        });
+        
+        setTimeout(() => { if (lema) lema.classList.add('visible'); }, 4200); 
+        setTimeout(() => { if (lema) lema.classList.remove('visible'); }, 7000); 
+
+        setTimeout(() => {
+            spans.forEach(span => {
+                span.style.transform = 'rotateX(0deg) skewX(0deg)';
+                span.style.opacity = '1';
+                span.style.filter = 'blur(0)';
+            });
+            if(bala.parentNode) bala.remove(); 
+        }, 7600); 
+        
+    }, 800);
+});
+
+</script>
+
+</body>
+</html>
